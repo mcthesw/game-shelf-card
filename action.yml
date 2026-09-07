@@ -29,10 +29,14 @@ runs:
     - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
       with:
         node-version: '24'
+    - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4
+      with:
+        version: 11.1.2
+        run_install: false
     - name: Install locked dependencies
       shell: bash
       working-directory: ${{ github.action_path }}
-      run: npm ci --ignore-scripts --no-audit --no-fund
+      run: pnpm install --frozen-lockfile --ignore-scripts
     - name: Build generator
       shell: bash
       working-directory: ${{ github.action_path }}

@@ -14,7 +14,7 @@
     "generate": "tsx src/cli.ts",
     "demo": "tsx src/cli.ts --config examples/demo.yml --demo --output generated/steam-card.png",
     "demo:all": "tsx scripts/previews.ts",
-    "verify": "npm run check && npm test && npm run build",
+    "verify": "pnpm run check && pnpm test && pnpm run build",
     "preview": "node scripts/serve-preview.mjs"
   },
   "dependencies": {
@@ -29,5 +29,6 @@
     "tsx": "4.23.13",
     "typescript": "7.0.2"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "packageManager": "pnpm@11.1.2"
 }

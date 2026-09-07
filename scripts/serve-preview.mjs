@@ -12,6 +12,6 @@ const server = createServer(async (request, response) => {
     response.writeHead(200, { 'Content-Type': name.endsWith('.png') ? 'image/png' : 'text/html; charset=utf-8',
       'Cache-Control': 'no-store' });
     response.end(bytes);
-  } catch { response.writeHead(404).end('Run npm run demo:all first.'); }
+  } catch { response.writeHead(404).end('Run pnpm run demo:all first.'); }
 });
 server.listen(4178, '127.0.0.1', () => console.log('Preview: http://127.0.0.1:4178'));
