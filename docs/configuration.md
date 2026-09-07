@@ -7,22 +7,24 @@ App IDs are positive integers (the number in a Steam store URL).
 | Key | Default | Meaning |
 | --- | --- | --- |
 | `steam_id` | Required | Your SteamID64, not a vanity name or profile URL |
-| `display_name` | Steam nickname | Optional name override, 1–80 characters |
+| `display_name` | Steam nickname | Optional accessible image title override, 1–80 characters |
 | `language` | `en` | `en` or `zh-CN`; labels and number formatting |
 | `theme` | `dark` | `dark` or `light` |
-| `sections.overview.enabled` | `true` | Library count, total hours, two-week hours |
+| `sections.overview.enabled` | `false` | Library count, total hours, two-week hours |
 | `sections.favorites.enabled` | `true` | Handpicked favorites |
 | `sections.favorites.limit` | `3` | First 1–12 configured favorites |
 | `sections.favorites.games` | `[]` | Ordered list of `{ appid, note?, name? }` |
 | `sections.recent.enabled` | `true` | Games with nonzero reported two-week time |
 | `sections.recent.limit` | `6` | 1–12 games, sorted by two-week time |
-| `sections.most_played.enabled` | `true` | Optional lifetime ranking |
+| `sections.most_played.enabled` | `false` | Optional lifetime ranking |
 | `sections.most_played.limit` | `3` | 1–12 games, sorted by lifetime time |
 | `exclude_games` | `[]` | App IDs excluded from the two automatic lists only |
 
-Disabled sections disappear entirely. Identity and last-successful-update time
-remain visible. The card grows vertically when counts increase; favorites use
-three columns, recent activity two columns, and the lifetime list one column.
+Disabled sections disappear entirely. A small Steam heading remains; avatar, nickname,
+update time and source footer are not displayed. The default 3 favorites and 6 recent
+games fit 480 x 480 logical pixels. Favorites use three columns with two-line titles
+and an optional one-line note; recent activity and the optional lifetime list use
+one column. Higher limits add rows and grow the card.
 
 Favorite entries must have unique App IDs. `note` is optional, up to 160
 characters. `name` is an optional title override, up to 120 characters, useful for

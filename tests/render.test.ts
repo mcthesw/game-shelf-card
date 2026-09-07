@@ -1,3 +1,4 @@
+import { Resvg } from '@resvg/resvg-js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtemp, writeFile, readFile, readdir, rm } from 'node:fs/promises';
@@ -17,12 +18,20 @@ test('renders bilingual, escaped, bounded text into a standalone high-resolution
     sections: { favorites: { games: [{ appid: 250900, note: '长文本'.repeat(50), name: '名称'.repeat(50) }] } } });
   const font = await bundledFont();
   const result = renderCard(buildModel(demoSnapshot(config), config), config, { games: new Map() }, font);
-  assert.equal(result.png.readUInt32BE(16), 1680);
+  assert.equal(result.png.readUInt32BE(16), 960);
   assert.equal(result.png.readUInt32BE(20), result.height * 2);
   assert(!result.svg.includes('<script>'));
   assert(!result.svg.includes('foreignObject'));
   assert(result.svg.includes('我的最爱'));
   assert(result.svg.includes('示例数据'));
+  assert(!result.svg.includes('数据来自 Steam'));
+  assert(!result.svg.includes('更新于'));
+  assert(!result.svg.includes('UTC'));
+  assert.equal(result.width, 480);
+  const pixels = new Resvg(result.svg, { font: { fontFiles: [font], loadSystemFonts: false } }).render().pixels;
+  assert.equal(pixels[3], 0, 'outer background must be transparent');
+  assert.equal(pixels[(100 * result.width + 2) * 4 + 3], 0, 'side gutter must be transparent');
+  assert(pixels.some((value, index) => index % 4 === 3 && value > 0), 'content remains visible');
   const typography = new Typography(font);
   const fitted = typography.lines('很长的名称和英文 A very long game title '.repeat(10), 17, 212, 2);
   assert(fitted.length <= 2);

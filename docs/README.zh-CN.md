@@ -3,7 +3,10 @@
 在 GitHub README 展示自己的 Steam 游戏时光：最爱由自己挑选，最近在玩和
 累计时长排行自动生成。首版生成一张完整 PNG，支持中英文、深浅主题。
 
-<img src="previews/light-zh-CN.png" alt="中文浅色 Steam 卡片示例" width="840">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="previews/dark-zh-CN.png">
+  <img src="previews/light-zh-CN.png" alt="Steam Stats sample" width="480">
+</picture>
 
 上图是虚构统计，封面来自 Steam；不是你的真实账号数据。
 
@@ -12,12 +15,12 @@
 安装 Node.js 22 或 24，在仓库执行：
 
 ```sh
-npm ci --ignore-scripts
-npm run demo
+pnpm install --frozen-lockfile --ignore-scripts
+pnpm run demo
 ```
 
 打开 `generated/steam-card.png`。默认示例完全离线；加上
-`npm run demo -- --online-art` 可以下载 Steam 公开封面。
+`pnpm run demo --online-art` 可以下载 Steam 公开封面。
 
 ## 使用自己的账号
 
@@ -29,10 +32,11 @@ npm run demo
 5. 执行：
 
 ```sh
-npm run generate -- --config config.local.yml --output generated/steam-card.png
+pnpm run generate --config config.local.yml --output generated/steam-card.png
 ```
 
-默认最爱 3 款、最近在玩 6 款、累计排行 3 款，各区域均可关闭或调整数量。
+默认最爱 3 款横排、最近在玩 6 款纵排，完整样稿为 480×480。
+总览和累计排行默认关闭；累计排行开启后默认 3 款，各区域可调整数量。
 最爱支持短评；`name` 可覆盖已下架游戏的标题。排除列表只影响自动排行，
 不改变最爱或总览统计。跨区域允许重复游戏。
 
@@ -51,7 +55,7 @@ npm run generate -- --config config.local.yml --output generated/steam-card.png
 
 ```html
 <a href="https://steamcommunity.com/profiles/YOUR_STEAM_ID/">
-  <img src="assets/steam-card.png" alt="我的 Steam 最爱与最近游玩" width="840">
+  <img src="assets/steam-card.png" alt="我的 Steam 最爱与最近游玩" width="480">
 </a>
 ```
 
@@ -65,3 +69,29 @@ npm run generate -- --config config.local.yml --output generated/steam-card.png
 完整配置见 [configuration.md](configuration.md)，技术证据和限制见
 [technical-notes.md](technical-notes.md)。源码为 MIT 许可，字体遵循 SIL OFL，
 游戏图片权利归各自权利人所有。本项目与 Valve 无隶属关系。
+
+卡片按 480 像素宽的 README 栏位设计，PNG 为两倍分辨率；不显示更新时间或数据来源页脚。项目统一使用 pnpm 11.1.2。
+
+## 透明背景与主题切换
+
+PNG 背景为透明，`theme` 决定文字和分隔线的颜色。仅透明不能让文字自动变色。
+为自动适配主题，准备内容相同、仅 `theme: dark` / `theme: light` 不同的两份配置：
+
+```sh
+pnpm run generate --config steam-stats-dark.yml --output assets/steam-dark.png
+pnpm run generate --config steam-stats-light.yml --output assets/steam-light.png
+```
+
+在 README 中组合两张图片：
+
+```html
+<a href="https://steamcommunity.com/profiles/YOUR_STEAM_ID/">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/steam-dark.png">
+    <img src="assets/steam-light.png" alt="我的 Steam 游戏" width="480">
+  </picture>
+</a>
+```
+
+Actions 中对两份配置和对应输出各执行一次卡片 Action，并同时提交两个图片路径。
+现有每日更新 workflow 仍为单图示例，需要按此方式扩展才能自动更新双主题图片。

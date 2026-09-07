@@ -4,7 +4,7 @@ import { safeError } from './errors.js';
 
 const help = `Steam Stats — a Steam profile card for GitHub READMEs
 
-Usage: npm run generate -- --config config.yml --output generated/steam-card.png
+Usage: pnpm run generate --config config.yml --output generated/steam-card.png
 
   --config PATH      YAML configuration (default: config.yml)
   --output PATH      PNG destination (default: generated/steam-card.png)
@@ -15,7 +15,7 @@ Usage: npm run generate -- --config config.yml --output generated/steam-card.png
   --help             Show this message
 
 Live mode reads STEAM_API_KEY from the environment. Never put it in the config.
-Output is 2x resolution; display at width 840 or less in your README.
+Output is 2x resolution; display at width 480 or less in your README.
 `;
 
 try {

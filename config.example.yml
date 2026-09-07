@@ -6,7 +6,7 @@ theme: dark
 
 sections:
   overview:
-    enabled: true
+    enabled: false
   favorites:
     enabled: true
     limit: 3
@@ -19,7 +19,7 @@ sections:
     enabled: true
     limit: 6
   most_played:
-    enabled: true
+    enabled: false
     limit: 3
 
 # Applies only to recent and most_played lists, not favorites or overview.

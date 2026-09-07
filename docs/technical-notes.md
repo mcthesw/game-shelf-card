@@ -39,7 +39,7 @@ SVG composition internally and resvg PNG output. All fonts and images are local
 to the render. No `foreignObject`, external-font dependency, or browser runtime.
 The unmodified OFL Noto CJK font is bundled for reproducible English/Chinese output.
 
-The single card is 840 logical pixels wide and rendered to a 1680-pixel PNG.
+The single card is 480 logical pixels wide and rendered to a 960-pixel PNG.
 Favorites form a three-column grid; recent activity a two-column list; lifetime
 ranking a compact full-width list. Long text is measured and wrapped/ellipsized.
 

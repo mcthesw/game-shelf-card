@@ -14,7 +14,8 @@ const json = (value: unknown) => new Response(JSON.stringify(value), { headers: 
 test('minimal config supplies approved defaults', () => {
   const config = parseConfig(base);
   assert.deepEqual([config.sections.favorites.limit, config.sections.recent.limit, config.sections.most_played.limit], [3, 6, 3]);
-  assert.equal(config.sections.most_played.enabled, true);
+  assert.equal(config.sections.most_played.enabled, false);
+  assert.equal(config.sections.overview.enabled, false);
 });
 
 test('configuration rejects typos, duplicate keys, IDs as unsafe numbers, invalid counts, and duplicate favorites', () => {

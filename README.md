@@ -5,18 +5,23 @@ your GitHub README. Choose your favorites yourself; hours do not get the final s
 
 [中文说明](docs/README.zh-CN.md) · [Configuration](docs/configuration.md) · [Technical notes](docs/technical-notes.md)
 
-<img src="docs/previews/dark-en.png" alt="Sample Steam card showing three favorites, six recent games and three most-played games" width="840">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/previews/dark-en.png">
+  <img src="docs/previews/light-en.png" alt="Steam Stats sample" width="480">
+</picture>
 
 *Fictional profile and statistics. Cover art is from Steam and belongs to the
 respective rights holders. This project is not affiliated with Valve.*
 
 ## What it does
 
-- One standalone PNG, rendered at 2× resolution for crisp README display.
-- Manually ordered favorites with optional short notes (3 by default).
+- One compact 480-pixel-wide PNG card, rendered at 2× resolution for crisp README display.
+- Designed for a profile README column; no update timestamp or source footer.
+- Three-column favorites with optional short notes (3 by default).
+- Default layout is 480 × 480 logical pixels with 3 favorites and 6 recent games.
 - Recent activity ranked by two-week playtime (6 by default).
-- Optional all-time playtime ranking (3 by default).
-- Profile, library size, total playtime and two-week playtime overview.
+- Optional all-time playtime ranking (off by default, 3 when enabled).
+- Optional library size, total playtime and two-week playtime overview (off by default).
 - English / Simplified Chinese; dark / light themes; per-section switches.
 - Duplicate games across sections are intentional. Automatic lists can exclude games.
 - Failed data requests preserve the previous card. Missing artwork uses a placeholder.
@@ -24,18 +29,18 @@ respective rights holders. This project is not affiliated with Valve.*
 
 ## Try it without an API key
 
-Use Node.js 22 or 24, then run in this repository:
+Use Node.js 22 or 24 and pnpm 11.1.2, then run in this repository:
 
 ```sh
-npm ci --ignore-scripts
-npm run demo
+pnpm install --frozen-lockfile --ignore-scripts
+pnpm run demo
 ```
 
 Open `generated/steam-card.png`. Demo mode is offline, uses fictional statistics,
 and is visibly labeled. To use public game covers with those sample statistics:
 
 ```sh
-npm run demo -- --online-art
+pnpm run demo --online-art
 ```
 
 ## Generate your own card
@@ -49,7 +54,7 @@ npm run demo -- --online-art
 5. Generate:
 
 ```sh
-npm run generate -- --config config.local.yml --output generated/steam-card.png
+pnpm run generate --config config.local.yml --output generated/steam-card.png
 ```
 
 Your local configuration is ignored by Git. For GitHub Actions, commit a public
@@ -73,7 +78,7 @@ reviewed commit after publication. There is no released `v1` tag yet.
 
 ```html
 <a href="https://steamcommunity.com/profiles/YOUR_STEAM_ID/">
-  <img src="assets/steam-card.png" alt="My Steam favorites and recent games" width="840">
+  <img src="assets/steam-card.png" alt="My Steam favorites and recent games" width="480">
 </a>
 ```
 
@@ -86,22 +91,22 @@ after inactivity. Images may remain cached briefly after an update.
 ## Options
 
 ```sh
-npm run generate -- --help
-npm run generate -- --config config.local.yml --no-art
-npm run demo:all -- --online-art
+pnpm run generate --help
+pnpm run generate --config config.local.yml --no-art
+pnpm run demo:all --online-art
 ```
 
 The complete schema and defaults are in [docs/configuration.md](docs/configuration.md).
 Light and Chinese examples are in [docs/previews](docs/previews).
-Run `npm run preview` to view the gallery locally. A PNG supports a single link
+Run `pnpm run preview` to view the gallery locally. A PNG supports a single link
 around the whole card; individual games inside the image are not clickable.
 
 ## Development
 
 ```sh
-npm ci --ignore-scripts
-npm run verify
-npm run demo
+pnpm install --frozen-lockfile --ignore-scripts
+pnpm run verify
+pnpm run demo
 ```
 
 Tests use isolated temporary files and mocked HTTP; no Steam account or credentials
@@ -131,3 +136,29 @@ and the [technical notes](docs/technical-notes.md) for limitations.
 
 Source code is MIT licensed. The bundled Noto font is licensed under the SIL OFL;
 game artwork and Steam data are not covered by the project's MIT license.
+
+## Transparent background and theme switching
+
+PNG backgrounds are transparent. The `theme` setting controls text and divider colors;
+transparency alone does not change text colors. For automatic theme selection, generate
+two images using the same configuration with `theme: dark` and `theme: light` respectively.
+Keep the other configuration fields identical. For example:
+
+```sh
+pnpm run generate --config steam-stats-dark.yml --output assets/steam-dark.png
+pnpm run generate --config steam-stats-light.yml --output assets/steam-light.png
+```
+
+Then embed them in the profile README:
+
+```html
+<a href="https://steamcommunity.com/profiles/YOUR_STEAM_ID/">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/steam-dark.png">
+    <img src="assets/steam-light.png" alt="My Steam games" width="480">
+  </picture>
+</a>
+```
+
+In Actions, invoke the card action once for each configuration/output pair and commit
+both output paths. The existing single-image workflow remains a single-theme example.

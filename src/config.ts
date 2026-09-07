@@ -3,8 +3,8 @@ import { parseDocument } from 'yaml';
 import { z } from 'zod';
 
 const appid = z.number().int().positive().max(4294967295);
-const section = (limit: number) => z.object({
-  enabled: z.boolean().default(true),
+const section = (limit: number, enabled = true) => z.object({
+  enabled: z.boolean().default(enabled),
   limit: z.number().int().min(1).max(12).default(limit),
 }).strict().prefault({});
 
@@ -14,7 +14,7 @@ export const configSchema = z.object({
   theme: z.enum(['dark', 'light']).default('dark'),
   display_name: z.string().trim().min(1).max(80).optional(),
   sections: z.object({
-    overview: z.object({ enabled: z.boolean().default(true) }).strict().prefault({}),
+    overview: z.object({ enabled: z.boolean().default(false) }).strict().prefault({}),
     favorites: z.object({
       enabled: z.boolean().default(true),
       limit: z.number().int().min(1).max(12).default(3),
@@ -29,7 +29,7 @@ export const configSchema = z.object({
       ),
     }).strict().prefault({}),
     recent: section(6),
-    most_played: section(3),
+    most_played: section(3, false),
   }).strict().prefault({}),
   exclude_games: z.array(appid).max(1000).default([]),
 }).strict();
