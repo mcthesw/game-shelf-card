@@ -5,8 +5,14 @@ import { demoSnapshot } from '../src/demo.js';
 import { buildModel } from '../src/model.js';
 import { bundledFont } from '../src/generate.js';
 import { fetchArtwork } from '../src/artwork.js';
+import { escapeXml } from '../src/text.js';
 import { renderCard } from '../src/render.js';
 
+const linkArgument = process.argv.includes('--link') ? process.argv[process.argv.indexOf('--link') + 1] : undefined;
+const link = linkArgument ? new URL(linkArgument) : undefined;
+if (link && (link.protocol !== 'https:' || link.username || link.password)) throw new Error('Preview links must use HTTPS without credentials.');
+const linkStart = link ? `<a href="${escapeXml(link.href)}">` : '';
+const linkEnd = link ? '</a>' : '';
 const online = process.argv.includes('--online-art');
 const configPath = process.argv.includes('--config') ? process.argv[process.argv.indexOf('--config') + 1]! : 'examples/demo.yml';
 const destination = resolve(process.argv.includes('--output-dir') ? process.argv[process.argv.indexOf('--output-dir') + 1]! : 'docs/previews');
@@ -31,4 +37,4 @@ for (const theme of ['dark', 'light'] as const) {
     console.log(`${theme}-${language}: ${result.width} × ${result.height}`);
   }
 }
-await writeFile(resolve(destination, 'index.html'), `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Steam Stats</title><style>:root{color-scheme:light dark}body{margin:0;background:light-dark(#fff,#0d1117);color:light-dark(#1f2328,#e6edf3);font:14px system-ui}main{max-width:480px;margin:24px auto;padding:0 16px}img{width:100%;display:block}h1{font-size:18px}h2{font-size:14px;font-weight:400}</style><main><h1>Steam Stats</h1>${['en','zh-CN'].map(lang => `<h2>${lang}</h2><picture><source media="(prefers-color-scheme: dark)" srcset="dark-${lang}.png"><img src="light-${lang}.png" alt="Steam sample card" width="480"></picture>`).join('')}</main></html>`);
+await writeFile(resolve(destination, 'index.html'), `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Steam Stats</title><style>:root{color-scheme:light dark}body{margin:0;background:light-dark(#fff,#0d1117);color:light-dark(#1f2328,#e6edf3);font:14px system-ui}main{max-width:480px;margin:24px auto;padding:0 16px}img{width:100%;display:block}h1{font-size:18px}h2{font-size:14px;font-weight:400}</style><main><h1>Steam Stats</h1>${['en','zh-CN'].map(lang => `<h2>${lang}</h2>${linkStart}<picture><source media="(prefers-color-scheme: dark)" srcset="dark-${lang}.png"><img src="light-${lang}.png" alt="Steam sample card" width="480"></picture>${linkEnd}`).join('')}</main></html>`);
