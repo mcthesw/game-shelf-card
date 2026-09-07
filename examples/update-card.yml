@@ -1,5 +1,4 @@
 # Copy to .github/workflows/steam-stats.yml in your profile repository.
-# Replace OWNER/steam-stats@COMMIT_SHA after this generator is published.
 name: Update Steam card
 on:
   workflow_dispatch:
@@ -16,7 +15,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-      - uses: OWNER/steam-stats@COMMIT_SHA
+      - uses: mcthesw/steam-stats@05fc6b06841ebfa120bda082973384f8194c21fc
         id: card
         with:
           steam-api-key: ${{ secrets.STEAM_API_KEY }}

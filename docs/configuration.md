@@ -1,86 +1,89 @@
 # Configuration
 
-Configuration is YAML. Unknown fields, duplicate keys, invalid types and invalid
-counts fail before network requests. SteamID64 must be a quoted 17-digit string;
-App IDs are positive integers (the number in a Steam store URL).
+Start with [config.example.yml](../config.example.yml). Save it as `steam-stats.yml`
+for the Action or `config.local.yml` for local use.
 
-| Key | Default | Meaning |
+## Card options
+
+| Key | Default | Values / purpose |
 | --- | --- | --- |
-| `steam_id` | Required | Your SteamID64, not a vanity name or profile URL |
-| `display_name` | Steam nickname | Optional accessible image title override, 1–80 characters |
-| `language` | `en` | `en` or `zh-CN`; labels and number formatting |
-| `theme` | `dark` | `dark` or `light` |
-| `sections.overview.enabled` | `false` | Library count, total hours, two-week hours |
-| `sections.favorites.enabled` | `true` | Handpicked favorites |
-| `sections.favorites.limit` | `3` | First 1–12 configured favorites |
-| `sections.favorites.games` | `[]` | Ordered Steam / IGDB / manual entries; see cross-platform.md |
-| `sections.recent.enabled` | `true` | Games with nonzero reported two-week time |
-| `sections.recent.limit` | `6` | 1–12 games, sorted by two-week time |
-| `sections.most_played.enabled` | `false` | Optional lifetime ranking |
-| `sections.most_played.limit` | `3` | 1–12 games, sorted by lifetime time |
-| `exclude_games` | `[]` | App IDs excluded from the two automatic lists only |
+| `steam_id` | Required | Quoted 17-digit SteamID64 |
+| `language` | `en` | `en`, `zh-CN` |
+| `theme` | `dark` | `neutral` for a shared image; `dark` or `light` for a specific background |
+| `min_height` | `0` | Minimum logical height, 0–2000 pixels; shorter content is centered |
+| `display_name` | Steam nickname | Accessible image title, up to 80 characters |
+| `exclude_games` | `[]` | Steam App IDs to omit from recent activity and lifetime ranking |
 
-Disabled sections disappear entirely. A small Steam heading remains; avatar, nickname,
-update time and source footer are not displayed. The default 3 favorites and 6 recent
-games fit approximately 480 x 480 logical pixels. Favorites use three columns with two-line titles
-and an optional one-line note; recent activity and the optional lifetime list use
-one column. Each row reserves only the actual title lines and optional notes. Higher limits add rows and grow the card.
+The example selects `neutral`. Output is a transparent PNG at 2× resolution;
+display it at 480 pixels wide or smaller. Each image can link to one destination.
 
-Favorite entries must have unique source identities. Steam App IDs and IGDB IDs are distinct. `note` is optional, up to 160
-characters. `name` is an optional title override, up to 120 characters, useful for
-delisted or region-restricted games. A favorite need not be in the owned library.
-For Steam entries without a known title or override, Store metadata must resolve successfully;
-otherwise generation fails with the App ID to fix.
+## Sections
 
-Exclusions are applied **before** limiting automatic lists. They never change
-the overview totals or handpicked favorites. Games may appear in multiple
-sections. Equal-playtime entries are ordered by App ID for stable output.
+| Section | Enabled by default | Default limit | Order |
+| --- | --- | --- | --- |
+| `favorites` | Yes | 3 | Configuration order |
+| `recent` | Yes | 6 | Two-week playtime |
+| `most_played` | No | 3 | Lifetime playtime |
+| `overview` | No | — | Library count, lifetime hours, two-week hours |
 
-Long titles and notes are wrapped or ellipsized by measured font width. The full
-configuration is retained. Game titles generally follow Steam's API response;
-`zh-CN` does not guarantee every game name is translated. CJK and Latin text are
-supported; glyphs absent from the bundled font are replaced by `?`.
+```yaml
+sections:
+  favorites:
+    limit: 3
+    games:
+      - appid: 250900
+        note: Always worth another run
+      - appid: 1145360
+      - appid: 1245620
+  recent:
+    limit: 4
+  most_played:
+    enabled: true
+    limit: 3
+  overview:
+    enabled: false
+```
 
-## CLI
+Limits accept 1–12. Set `enabled: false` to hide a section. Games can appear in
+multiple sections. Exclusions apply before automatic list limits; overview totals
+include all games returned by Steam.
 
-| Flag | Default | Meaning |
-| --- | --- | --- |
-| `--config` | `config.yml` | YAML path |
-| `--output` | `generated/steam-card.png` | PNG destination |
-| `--cache` | `.cache/artwork` | Optional artwork cache directory |
-| `--demo` | Off | Fixed fictional data, labeled, offline |
-| `--online-art` | Off | Fetch Steam covers in demo mode |
-| `--no-art` | Off | Force artwork placeholders; takes precedence |
-
-Live mode reads `STEAM_API_KEY` only from the environment. `--demo` ignores the
-key and never fetches private profile data. CLI paths are relative to the current
-working directory, not the configuration file's directory.
+Favorites accept `appid`, `igdb_id`, or a manual `id`, plus optional names, covers,
+and notes. See [favorite entries](cross-platform.md). Titles wrap to two lines;
+notes use one line, with long text shortened to fit.
 
 ## GitHub Action
 
-Inputs: `config` (default `steam-stats.yml`), `output` (default
-`assets/steam-card.png`), `steam-api-key`, and optional `demo: 'true'` for an
-offline smoke test. Paths must be relative to the checked-out repository, cannot
-traverse outside it, contain symlinks, or target `.git`.
+| Input | Default / purpose |
+| --- | --- |
+| `steam-api-key` | Steam Web API key from a repository secret |
+| `config` | `steam-stats.yml` |
+| `output` | `assets/steam-card.png` |
+| `igdb-client-id` | Optional IGDB application ID |
+| `igdb-client-secret` | Optional IGDB application secret |
+| `demo` | `false`; `true` generates sample data |
 
-Outputs: `path` (repository-relative PNG path) and `changed` (`true` / `false`).
-The action does not commit or push. It receives the Steam key only in the
-generation step, after dependency installation. `examples/update-card.yml`
-adds daily scheduling and a narrowly scoped card commit.
+Paths are relative to the checked-out repository. Outputs are `path` and `changed`
+(`true` or `false`). The [example workflow](../examples/update-card.yml) schedules
+generation and commits updated images. Repositories with protected default branches
+need a publishing workflow that follows their branch rules.
 
-Identical PNG bytes skip replacement and produce `changed=false`. A later
-successful refresh normally changes the visible update timestamp even when
-playtime is unchanged; same-minute reruns with identical data and art are stable.
+## CLI
 
-## Missing data
+| Flag | Default / purpose |
+| --- | --- |
+| `--config` | `config.yml` |
+| `--output` | `generated/steam-card.png` |
+| `--cache` | `.cache/artwork` |
+| `--demo` | Generate offline sample data |
+| `--online-art` | Download covers for sample data |
+| `--no-art` | Render artwork placeholders |
 
-- Empty library / recent lists require explicit zero counts from Steam.
-- Missing counts, hidden/missing playtime, duplicate or partial game lists fail
-  the run. No old card is deleted before a replacement is ready.
-- An empty recent list shows a quiet-fortnight message; empty favorite and
-  lifetime sections have their own empty states.
-- If overview and lifetime ranking are off, the library endpoint is not queried.
-  If overview and recent activity are off, the recent endpoint is not queried.
-- Public covers and avatar downloads are best-effort. A seven-day local cache
-  reduces requests; stale cached images can be reused during an outage, otherwise
-  styled placeholders are shown. No remote image URLs remain in the PNG.
+CLI paths are relative to the working directory. Set `STEAM_API_KEY` in the
+environment for Steam data; IGDB uses `IGDB_CLIENT_ID` and `IGDB_CLIENT_SECRET`.
+
+## When a refresh fails
+
+Check the workflow log and Steam Game details visibility. Failed statistics
+requests preserve the previous image. Unavailable covers use cached artwork or a
+placeholder; local cover paths must point to valid image files.

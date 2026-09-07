@@ -2,7 +2,7 @@
 # Replace this placeholder with your quoted 17-digit SteamID64.
 steam_id: "YOUR_STEAM_ID"
 language: en
-theme: dark
+theme: neutral
 
 sections:
   overview:
