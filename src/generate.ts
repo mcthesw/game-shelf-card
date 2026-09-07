@@ -1,5 +1,5 @@
 import { fileURLToPath } from 'node:url';
-import { resolve, extname } from 'node:path';
+import { resolve, extname, dirname } from 'node:path';
 import { access } from 'node:fs/promises';
 import { loadConfig, type Config } from './config.js';
 import { buildModel, type Snapshot } from './model.js';
@@ -7,6 +7,8 @@ import { fetchSnapshot } from './steam.js';
 import { fetchArtwork, type Warn } from './artwork.js';
 import { renderCard } from './render.js';
 import { atomicWrite } from './output.js';
+import { externalFavorites } from './favorites.js';
+import { createIgdb } from './igdb.js';
 import { demoSnapshot } from './demo.js';
 
 export async function bundledFont(): Promise<string> {
@@ -23,6 +25,8 @@ export interface GenerateOptions {
   outputPath: string;
   cachePath?: string;
   apiKey?: string;
+  igdbClientId?: string;
+  igdbClientSecret?: string;
   demo?: boolean;
   onlineArt?: boolean;
   noArt?: boolean;
@@ -39,11 +43,16 @@ export async function generate(options: GenerateOptions, dependencies: GenerateD
   const font = await bundledFont();
   const snapshot = options.demo ? demoSnapshot(config)
     : await (dependencies.loadSnapshot ?? fetchSnapshot)(config, options.apiKey ?? '');
+  if (!options.demo) {
+    const igdb = createIgdb({ clientId: options.igdbClientId, clientSecret: options.igdbClientSecret,
+      cache: resolve(options.cachePath ?? '.cache/artwork') });
+    snapshot.favorites.push(...await externalFavorites(config, igdb.get));
+  }
   const model = buildModel(snapshot, config);
   const warn = options.warn ?? (() => {});
   const art = options.noArt || (options.demo && !options.onlineArt)
     ? { games: new Map<number, string>() }
-    : await fetchArtwork(model, config, resolve(options.cachePath ?? '.cache/artwork'), warn);
+    : await fetchArtwork(model, config, resolve(options.cachePath ?? '.cache/artwork'), warn, undefined, dirname(resolve(options.configPath)));
   const rendered = renderCard(model, config, art, font);
   const changed = await atomicWrite(output, rendered.png);
   return { output, changed, width: rendered.width, height: rendered.height, demo: model.demo };

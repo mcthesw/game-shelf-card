@@ -12,6 +12,7 @@ try {
   const result = await generate({
     configPath: config, outputPath: output,
     apiKey: process.env.STEAM_API_KEY,
+      igdbClientId: process.env.IGDB_CLIENT_ID, igdbClientSecret: process.env.IGDB_CLIENT_SECRET,
     demo: process.env.CARD_DEMO === 'true',
     cachePath: join(process.env.RUNNER_TEMP ?? workspace, 'steam-stats-artwork'),
     warn: message => process.stderr.write(`Warning: ${message}\n`),

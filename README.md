@@ -162,3 +162,5 @@ Then embed them in the profile README:
 
 In Actions, invoke the card action once for each configuration/output pair and commit
 both output paths. The existing single-image workflow remains a single-theme example.
+
+Favorites support Steam, IGDB and manual entries. See [cross-platform setup and search](docs/cross-platform.md).

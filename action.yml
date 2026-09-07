@@ -7,6 +7,12 @@ inputs:
   steam-api-key:
     description: Steam Web API key (pass a GitHub Actions secret); not needed for demo
     required: false
+  igdb-client-id:
+    description: Optional Twitch client ID for IGDB favorites
+    required: false
+  igdb-client-secret:
+    description: Optional Twitch client secret for IGDB favorites
+    required: false
   config:
     description: Configuration path relative to the checked-out repository
     default: steam-stats.yml
@@ -46,6 +52,8 @@ runs:
       shell: bash
       env:
         STEAM_API_KEY: ${{ inputs.steam-api-key }}
+        IGDB_CLIENT_ID: ${{ inputs.igdb-client-id }}
+        IGDB_CLIENT_SECRET: ${{ inputs.igdb-client-secret }}
         CARD_CONFIG: ${{ inputs.config }}
         CARD_OUTPUT: ${{ inputs.output }}
         CARD_DEMO: ${{ inputs.demo }}

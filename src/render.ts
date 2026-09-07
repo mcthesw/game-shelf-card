@@ -1,6 +1,6 @@
 import { Resvg } from '@resvg/resvg-js';
 import type { Config } from './config.js';
-import type { CardGame, CardModel } from './model.js';
+import { gameKey, type CardGame, type CardModel } from './model.js';
 import type { Artwork } from './artwork.js';
 import { escapeXml as esc, Typography } from './text.js';
 
@@ -46,7 +46,7 @@ export function renderCard(model: CardModel, config: Config, artwork: Artwork, f
     }
   };
   let y = 16;
-  text('Steam', 16, y + 16, 15, theme.accent);
+  text(model.favorites.some(game => game.appid === undefined) ? 'Games' : 'Steam', 16, y + 16, 15, theme.accent);
   if (model.demo) text(tr.demo, 464, y + 16, 10, theme.muted, 100, 'end');
   y += 28;
   if (config.sections.overview.enabled) {
@@ -69,7 +69,7 @@ export function renderCard(model: CardModel, config: Config, artwork: Artwork, f
     y += 32;
   };
   const row = (game: CardGame, detail: string, trailing: string, height: number) => {
-    picture(artwork.games.get(game.appid), 16, y + 1, 50, 28, game.appid, 4);
+    picture(artwork.games.get(gameKey(game)), 16, y + 1, 50, 28, game.appid ?? 145, 4);
     text(game.name, 76, y + 13, 13, theme.text, 380);
     text(detail, 76, y + 28, 10, theme.muted, trailing ? 235 : 380);
     if (trailing) text(trailing, 464, y + 28, 10, theme.muted, 140, 'end');
@@ -81,7 +81,7 @@ export function renderCard(model: CardModel, config: Config, artwork: Artwork, f
     model.favorites.forEach((game, index) => {
       const x = 16 + (index % 3) * 154;
       const top = y + Math.floor(index / 3) * 124;
-      picture(artwork.games.get(game.appid), x, top, 140, 65, game.appid, 4);
+      picture(artwork.games.get(gameKey(game)), x, top, 140, 65, game.appid ?? 145, 4);
       typography.lines(game.name, 12, 140, 2).forEach((line, lineIndex) => {
         text(line, x, top + 81 + lineIndex * 15, 12, theme.text, 140);
       });
@@ -91,7 +91,7 @@ export function renderCard(model: CardModel, config: Config, artwork: Artwork, f
     y += 6;
   }
   if (config.sections.recent.enabled) {
-    section(tr.recent, tr.fortnight);
+    section(tr.recent, model.favorites.some(game => game.appid === undefined) ? `Steam · ${tr.fortnight}` : tr.fortnight);
     if (!model.recent.length) empty(tr.emptyRecent);
     for (const game of model.recent) {
       row(game, hours(game.recentMinutes), `${tr.total} ${hours(game.minutes ?? 0)}`, 38);
@@ -102,7 +102,7 @@ export function renderCard(model: CardModel, config: Config, artwork: Artwork, f
     section(tr.most, tr.lifetime);
     if (!model.mostPlayed.length) empty(tr.emptyMost);
     for (const game of model.mostPlayed) {
-      picture(artwork.games.get(game.appid), 16, y, 32, 18, game.appid, 3);
+      picture(artwork.games.get(gameKey(game)), 16, y, 32, 18, game.appid ?? 145, 3);
       text(game.name, 58, y + 14, 12, theme.text, 298);
       text(hours(game.minutes ?? 0), 464, y + 14, 11, theme.muted, 100, 'end');
       y += 24;

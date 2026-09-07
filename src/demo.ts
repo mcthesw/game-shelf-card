@@ -1,4 +1,4 @@
-import type { Snapshot } from './model.js';
+import { gameKey, type Snapshot } from './model.js';
 import type { Config } from './config.js';
 
 export function demoSnapshot(config: Config): Snapshot {
@@ -16,7 +16,7 @@ export function demoSnapshot(config: Config): Snapshot {
     profile: { steamId: config.steam_id, name: 'Player One' },
     games, recent: games.filter(game => game.recentMinutes > 0),
     favorites: config.sections.favorites.games.map(favorite => games.find(game => game.appid === favorite.appid)
-      ?? { appid: favorite.appid, name: favorite.name ?? `Game ${favorite.appid}`, minutes: null, recentMinutes: 0 }),
+      ?? { appid: favorite.appid, key: String(gameKey(favorite)), image: favorite.image, name: favorite.name ?? `Game ${favorite.appid}`, minutes: null, recentMinutes: 0 }),
     fetchedAt: '2026-09-07T00:00:00.000Z', demo: true,
   };
 }

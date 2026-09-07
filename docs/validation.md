@@ -64,3 +64,11 @@ Game art fetching is optional. `pnpm run demo` is reproducible and offline;
 - Removed visible avatar/nickname in favor of a small Steam heading.
 - pnpm verification: 19 tests, type checking and build pass. Four theme/language previews regenerated.
 - Earlier 480 x 602 and 960 x 1204 measurements above describe the previous revision.
+
+## Cross-platform revision
+
+- 24 tests pass: source validation and ID collisions, manual/IGDB resolution order, mocked OAuth/search, escaping, metadata cache and credential-free cache reuse, error redaction, local artwork and path/network restrictions.
+- Six-favorite / three-recent demo: 480 x 490, real Steam covers, explicit text-only Majora placeholder, fictional activity.
+- No Steam key or IGDB client credentials are present. Live IGDB authentication/search is not verified. GitHub-hosted action execution remains unverified.
+
+- Live-mode CLI smoke: manual-only configuration generates with no API credentials; selecting IGDB without credentials fails clearly and preserves the previous PNG hash.

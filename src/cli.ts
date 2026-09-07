@@ -33,7 +33,8 @@ try {
     if (values['online-art'] && !values.demo) throw new Error('--online-art is only needed with --demo.');
     const result = await generate({
       configPath: values.config, outputPath: values.output, cachePath: values.cache,
-      apiKey: process.env.STEAM_API_KEY, demo: values.demo,
+      apiKey: process.env.STEAM_API_KEY,
+      igdbClientId: process.env.IGDB_CLIENT_ID, igdbClientSecret: process.env.IGDB_CLIENT_SECRET, demo: values.demo,
       onlineArt: values['online-art'], noArt: values['no-art'],
       warn: message => process.stderr.write(`Warning: ${message}\n`),
     });

@@ -75,3 +75,5 @@ been claimed until the repository is published and CI actually runs.
 - `output.ts`: single-file atomic publication.
 - `cli.ts`, `action-entry.ts`: environment/argument adapters.
 - `demo.ts`: visibly fictional offline data, never a live-account fallback.
+
+Cross-platform favorites are resolved by `favorites.ts`; `igdb.ts` owns authenticated metadata lookup/search/cache. Dependencies and credentials are assembled in `generate.ts`, CLI or Action entry points. Rendering uses namespaced game identities, with Steam playtime remaining separate from non-Steam metadata.

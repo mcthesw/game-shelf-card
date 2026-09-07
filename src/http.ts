@@ -10,13 +10,14 @@ export class HttpError extends Error {
 // Steam API keys are query parameters and must never reach logs.
 export async function requestBytes(
   url: URL, label: string, fetcher: Fetch = globalThis.fetch,
-  wait: Sleep = sleep, maxBytes = 5 * 1024 * 1024,
+  wait: Sleep = sleep, maxBytes = 5 * 1024 * 1024, init: RequestInit = {},
 ): Promise<{ bytes: Buffer; contentType: string }> {
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
       const response = await fetcher(url, {
+        ...init,
         signal: AbortSignal.timeout(15_000), redirect: 'error',
-        headers: { 'User-Agent': 'steam-stats-card/0.1' },
+        headers: { 'User-Agent': 'steam-stats-card/0.1', ...init.headers },
       });
       if (!response.ok) {
         await response.body?.cancel();

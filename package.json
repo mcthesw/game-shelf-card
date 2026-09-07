@@ -15,7 +15,8 @@
     "demo": "tsx src/cli.ts --config examples/demo.yml --demo --output generated/steam-card.png",
     "demo:all": "tsx scripts/previews.ts",
     "verify": "pnpm run check && pnpm test && pnpm run build",
-    "preview": "node scripts/serve-preview.mjs"
+    "preview": "node scripts/serve-preview.mjs",
+    "search": "tsx src/search.ts"
   },
   "dependencies": {
     "@resvg/resvg-js": "2.6.2",

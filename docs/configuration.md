@@ -13,7 +13,7 @@ App IDs are positive integers (the number in a Steam store URL).
 | `sections.overview.enabled` | `false` | Library count, total hours, two-week hours |
 | `sections.favorites.enabled` | `true` | Handpicked favorites |
 | `sections.favorites.limit` | `3` | First 1–12 configured favorites |
-| `sections.favorites.games` | `[]` | Ordered list of `{ appid, note?, name? }` |
+| `sections.favorites.games` | `[]` | Ordered Steam / IGDB / manual entries; see cross-platform.md |
 | `sections.recent.enabled` | `true` | Games with nonzero reported two-week time |
 | `sections.recent.limit` | `6` | 1–12 games, sorted by two-week time |
 | `sections.most_played.enabled` | `false` | Optional lifetime ranking |
@@ -26,10 +26,10 @@ games fit 480 x 480 logical pixels. Favorites use three columns with two-line ti
 and an optional one-line note; recent activity and the optional lifetime list use
 one column. Higher limits add rows and grow the card.
 
-Favorite entries must have unique App IDs. `note` is optional, up to 160
+Favorite entries must have unique source identities. Steam App IDs and IGDB IDs are distinct. `note` is optional, up to 160
 characters. `name` is an optional title override, up to 120 characters, useful for
 delisted or region-restricted games. A favorite need not be in the owned library.
-Without a known title or override, Store metadata must resolve successfully;
+For Steam entries without a known title or override, Store metadata must resolve successfully;
 otherwise generation fails with the App ID to fix.
 
 Exclusions are applied **before** limiting automatic lists. They never change

@@ -19,13 +19,20 @@ export const configSchema = z.object({
       enabled: z.boolean().default(true),
       limit: z.number().int().min(1).max(12).default(3),
       games: z.array(z.object({
-        appid,
-        note: z.string().trim().max(160).optional(),
-        // Optional override for unavailable/delisted Store entries.
+        appid: appid.optional(),
+        igdb_id: z.number().int().positive().max(2147483647).optional(),
+        id: z.string().regex(/^[a-z0-9][a-z0-9-]{0,79}$/).optional(),
         name: z.string().trim().min(1).max(120).optional(),
-      }).strict()).max(100).default([]).refine(
-        games => new Set(games.map(game => game.appid)).size === games.length,
-        'Each favorite App ID must be unique.',
+        image: z.string().trim().min(1).max(2048).optional(),
+        note: z.string().trim().max(160).optional(),
+      }).strict().superRefine((game, ctx) => {
+        if ([game.appid, game.igdb_id, game.id].filter(value => value !== undefined).length !== 1)
+          ctx.addIssue({ code: 'custom', message: 'Specify exactly one of appid, igdb_id or id.' });
+        if (game.id && (!game.name || !game.image))
+          ctx.addIssue({ code: 'custom', message: 'Manual games require name and image.' });
+      })).max(100).default([]).refine(
+        games => new Set(games.map(game => game.appid !== undefined ? `steam:${game.appid}` : game.igdb_id !== undefined ? `igdb:${game.igdb_id}` : `manual:${game.id}`)).size === games.length,
+        'Each favorite identity must be unique.',
       ),
     }).strict().prefault({}),
     recent: section(6),

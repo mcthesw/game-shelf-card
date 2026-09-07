@@ -95,3 +95,5 @@ pnpm run generate --config steam-stats-light.yml --output assets/steam-light.png
 
 Actions 中对两份配置和对应输出各执行一次卡片 Action，并同时提交两个图片路径。
 现有每日更新 workflow 仍为单图示例，需要按此方式扩展才能自动更新双主题图片。
+
+最爱现支持 Steam、IGDB 和手动条目；配置、搜索命令和六款游戏样稿见 [跨平台使用说明](cross-platform.md)。

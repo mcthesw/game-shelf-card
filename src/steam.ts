@@ -67,6 +67,10 @@ export async function storeGame(appid: number, language: Config['language'], fet
 }
 
 export async function fetchSnapshot(config: Config, key: string, fetcher?: Fetch): Promise<Snapshot> {
+  const needsSteam = config.sections.overview.enabled || config.sections.recent.enabled || config.sections.most_played.enabled
+    || (config.sections.favorites.enabled && config.sections.favorites.games.slice(0, config.sections.favorites.limit).some(game => game.appid !== undefined));
+  if (!needsSteam) return { profile: { steamId: config.steam_id, name: config.display_name ?? 'Games' },
+    games: [], recent: [], favorites: [], fetchedAt: new Date().toISOString(), demo: false };
   if (!key.trim()) throw new Error('Set STEAM_API_KEY in the environment or GitHub Secrets.');
   const needsLibrary = config.sections.overview.enabled || config.sections.most_played.enabled;
   const needsRecent = config.sections.overview.enabled || config.sections.recent.enabled;
@@ -87,12 +91,12 @@ export async function fetchSnapshot(config: Config, key: string, fetcher?: Fetch
   const recent = recentData === undefined ? [] : parseRecent(recentData);
   const catalog = new Map([...recent, ...games].map(game => [game.appid, game]));
   const requested = config.sections.favorites.enabled
-    ? config.sections.favorites.games.slice(0, config.sections.favorites.limit) : [];
+    ? config.sections.favorites.games.slice(0, config.sections.favorites.limit).filter(favorite => favorite.appid !== undefined) : [];
   const favorites = await mapConcurrent(requested, 3, async favorite => {
     const known = catalog.get(favorite.appid);
     if (known) return known;
     if (favorite.name) return { appid: favorite.appid, name: favorite.name, minutes: null, recentMinutes: 0 };
-    return storeGame(favorite.appid, config.language, fetcher);
+    return storeGame(favorite.appid!, config.language, fetcher);
   });
   return {
     profile: { steamId: profile.steamid, name: profile.personaname, avatarUrl: profile.avatarfull },
