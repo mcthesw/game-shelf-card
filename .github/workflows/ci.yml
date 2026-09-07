@@ -54,3 +54,12 @@ jobs:
         with:
           name: sample-card
           path: generated/action-demo.png
+  workflow-smoke:
+    permissions:
+      contents: write
+    uses: ./.github/workflows/update-card.yml
+    with:
+      config: examples/demo.yml
+      output: generated/workflow-demo.png
+      demo: true
+      commit: false
