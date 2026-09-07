@@ -11,7 +11,8 @@ const section = (limit: number, enabled = true) => z.object({
 export const configSchema = z.object({
   steam_id: z.string().regex(/^7656119\d{10}$/, 'Use a quoted 17-digit SteamID64, not a profile URL.'),
   language: z.enum(['en', 'zh-CN']).default('en'),
-  theme: z.enum(['dark', 'light']).default('dark'),
+  theme: z.enum(['dark', 'light', 'neutral']).default('dark'),
+  min_height: z.number().int().min(0).max(2000).default(0),
   display_name: z.string().trim().min(1).max(80).optional(),
   sections: z.object({
     overview: z.object({ enabled: z.boolean().default(false) }).strict().prefault({}),

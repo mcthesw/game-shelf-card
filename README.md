@@ -164,3 +164,5 @@ In Actions, invoke the card action once for each configuration/output pair and c
 both output paths. The existing single-image workflow remains a single-theme example.
 
 Favorites support Steam, IGDB and manual entries. See [cross-platform setup and search](docs/cross-platform.md).
+
+Use `theme: neutral` for one transparent image shared by light and dark pages. Set `min_height` (logical pixels) to align it with a neighboring card; shorter content is centered without stretching.

@@ -5,6 +5,7 @@ import type { Artwork } from './artwork.js';
 import { escapeXml as esc, Typography } from './text.js';
 
 const themes = {
+  neutral: { text: '#777777', muted: '#777777', line: '#777777', accent: '#3584b8' },
   dark: { text: '#f0f4f7', muted: '#9babbc', line: '#2c3946', accent: '#9ce6c0' },
   light: { text: '#192c3c', muted: '#576c7e', line: '#dde4ea', accent: '#18784e' },
 };
@@ -113,8 +114,8 @@ export function renderCard(model: CardModel, config: Config, artwork: Artwork, f
       y += 24;
     }
   }
-  const height = y + 12;
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="480" height="${height}" viewBox="0 0 480 ${height}" role="img"><title>${esc(model.name)} — Steam</title><defs>${defs.join('')}</defs>${parts.join('')}</svg>`;
+  const height = Math.max(y + 12, config.min_height);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="480" height="${height}" viewBox="0 0 480 ${height}" role="img"><title>${esc(model.name)} — Steam</title><defs>${defs.join('')}</defs><g transform="translate(0 ${(height - y - 12) / 2})">${parts.join('')}</g></svg>`;
   const renderer = new Resvg(svg, { font: { fontFiles: [fontPath], loadSystemFonts: false }, fitTo: { mode: 'width', value: 960 } });
   return { png: renderer.render().asPng(), svg, width: 480, height };
 }
