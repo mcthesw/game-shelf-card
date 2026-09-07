@@ -1,0 +1,34 @@
+# Copy to .github/workflows/steam-stats.yml in your profile repository.
+# Replace OWNER/steam-stats@COMMIT_SHA after this generator is published.
+name: Update Steam card
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 4 * * *'
+permissions:
+  contents: write
+concurrency:
+  group: steam-card-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: OWNER/steam-stats@COMMIT_SHA
+        id: card
+        with:
+          steam-api-key: ${{ secrets.STEAM_API_KEY }}
+          config: steam-stats.yml
+          output: assets/steam-card.png
+      - name: Commit updated card
+        if: steps.card.outputs.changed == 'true'
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- assets/steam-card.png
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "chore: update Steam card"
+          git push

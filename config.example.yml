@@ -1,0 +1,26 @@
+# Copy to config.local.yml (local) or steam-stats.yml (GitHub Actions).
+# Replace this placeholder with your quoted 17-digit SteamID64.
+steam_id: "YOUR_STEAM_ID"
+language: en
+theme: dark
+
+sections:
+  overview:
+    enabled: true
+  favorites:
+    enabled: true
+    limit: 3
+    games:
+      - appid: 250900
+        note: "Always worth another run"
+      - appid: 1145360
+      - appid: 1245620
+  recent:
+    enabled: true
+    limit: 6
+  most_played:
+    enabled: true
+    limit: 3
+
+# Applies only to recent and most_played lists, not favorites or overview.
+exclude_games: []

@@ -1,0 +1,48 @@
+name: Steam Stats Card
+description: Generate a Steam profile card for your GitHub README
+branding:
+  icon: image
+  color: green
+inputs:
+  steam-api-key:
+    description: Steam Web API key (pass a GitHub Actions secret); not needed for demo
+    required: false
+  config:
+    description: Configuration path relative to the checked-out repository
+    default: steam-stats.yml
+  output:
+    description: PNG path relative to the checked-out repository
+    default: assets/steam-card.png
+  demo:
+    description: Generate fictional sample data without network or an API key
+    default: 'false'
+outputs:
+  changed:
+    description: Whether the output PNG changed
+    value: ${{ steps.generate.outputs.changed }}
+  path:
+    description: Generated PNG path relative to the repository
+    value: ${{ steps.generate.outputs.path }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+      with:
+        node-version: '24'
+    - name: Install locked dependencies
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: npm ci --ignore-scripts --no-audit --no-fund
+    - name: Build generator
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: node node_modules/typescript/bin/tsc
+    - name: Generate card
+      id: generate
+      shell: bash
+      env:
+        STEAM_API_KEY: ${{ inputs.steam-api-key }}
+        CARD_CONFIG: ${{ inputs.config }}
+        CARD_OUTPUT: ${{ inputs.output }}
+        CARD_DEMO: ${{ inputs.demo }}
+      run: node "$GITHUB_ACTION_PATH/dist/src/action-entry.js"
