@@ -1,0 +1,33 @@
+{
+  "name": "steam-stats-card",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A configurable Steam profile card for GitHub READMEs",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc",
+    "check": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "generate": "tsx src/cli.ts",
+    "demo": "tsx src/cli.ts --config examples/demo.yml --demo --output generated/steam-card.png",
+    "demo:all": "tsx scripts/previews.ts",
+    "verify": "npm run check && npm test && npm run build",
+    "preview": "node scripts/serve-preview.mjs"
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "2.6.2",
+    "fontkit": "2.0.4",
+    "yaml": "2.9.0",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@types/fontkit": "2.0.9",
+    "@types/node": "26.4.1",
+    "tsx": "4.23.13",
+    "typescript": "7.0.2"
+  },
+  "license": "MIT"
+}

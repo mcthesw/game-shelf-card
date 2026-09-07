@@ -1,0 +1,9 @@
+.env
+.env.*
+!.env.example
+config.local.yml
+node_modules/
+dist/
+.cache/
+generated/
+*.tmp

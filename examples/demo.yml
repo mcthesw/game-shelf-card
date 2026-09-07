@@ -1,0 +1,13 @@
+steam_id: "76561198000000000"
+display_name: Player One
+language: en
+theme: dark
+sections:
+  favorites:
+    games:
+      - appid: 250900
+        note: Just one more run. Always.
+      - appid: 1145360
+        note: Every escape is worth the journey.
+      - appid: 1245620
+        note: A world I love getting lost in.
