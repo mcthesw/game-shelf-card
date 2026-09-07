@@ -22,9 +22,9 @@ App IDs are positive integers (the number in a Steam store URL).
 
 Disabled sections disappear entirely. A small Steam heading remains; avatar, nickname,
 update time and source footer are not displayed. The default 3 favorites and 6 recent
-games fit 480 x 480 logical pixels. Favorites use three columns with two-line titles
+games fit approximately 480 x 480 logical pixels. Favorites use three columns with two-line titles
 and an optional one-line note; recent activity and the optional lifetime list use
-one column. Higher limits add rows and grow the card.
+one column. Each row reserves only the actual title lines and optional notes. Higher limits add rows and grow the card.
 
 Favorite entries must have unique source identities. Steam App IDs and IGDB IDs are distinct. `note` is optional, up to 160
 characters. `name` is an optional title override, up to 120 characters, useful for

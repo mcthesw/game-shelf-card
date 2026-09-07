@@ -23,6 +23,7 @@ export const configSchema = z.object({
         igdb_id: z.number().int().positive().max(2147483647).optional(),
         id: z.string().regex(/^[a-z0-9][a-z0-9-]{0,79}$/).optional(),
         name: z.string().trim().min(1).max(120).optional(),
+        names: z.object({ en: z.string().trim().min(1).max(120).optional(), 'zh-CN': z.string().trim().min(1).max(120).optional() }).strict().optional(),
         image: z.string().trim().min(1).max(2048).optional(),
         note: z.string().trim().max(160).optional(),
       }).strict().superRefine((game, ctx) => {

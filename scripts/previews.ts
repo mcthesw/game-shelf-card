@@ -1,5 +1,5 @@
 import { mkdir, writeFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { resolve, dirname } from 'node:path';
 import { loadConfig } from '../src/config.js';
 import { demoSnapshot } from '../src/demo.js';
 import { buildModel } from '../src/model.js';
@@ -8,18 +8,19 @@ import { fetchArtwork } from '../src/artwork.js';
 import { renderCard } from '../src/render.js';
 
 const online = process.argv.includes('--online-art');
-const destination = resolve('docs/previews');
+const configPath = process.argv.includes('--config') ? process.argv[process.argv.indexOf('--config') + 1]! : 'examples/demo.yml';
+const destination = resolve(process.argv.includes('--output-dir') ? process.argv[process.argv.indexOf('--output-dir') + 1]! : 'docs/previews');
 await mkdir(destination, { recursive: true });
-const config = await loadConfig('examples/demo.yml');
+const config = await loadConfig(configPath);
 const model = buildModel(demoSnapshot(config), config);
-const art = online ? await fetchArtwork(model, config, '.cache/artwork', console.warn) : { games: new Map<number, string>() };
+const art = online ? await fetchArtwork(model, config, '.cache/artwork', console.warn, undefined, dirname(resolve(configPath))) : { games: new Map<number, string>() };
 const font = await bundledFont();
 for (const theme of ['dark', 'light'] as const) {
   for (const language of ['en', 'zh-CN'] as const) {
     const settings = structuredClone(config);
     settings.theme = theme;
     settings.language = language;
-    if (language === 'zh-CN') {
+    if (language === 'zh-CN' && configPath === 'examples/demo.yml') {
       settings.display_name = '玩家一号';
       settings.sections.favorites.games[0]!.note = '再来一局，每次都这么说。';
       settings.sections.favorites.games[1]!.note = '每一次逃离，都值得重新出发。';

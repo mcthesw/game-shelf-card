@@ -72,3 +72,15 @@ Game art fetching is optional. `pnpm run demo` is reproducible and offline;
 - No Steam key or IGDB client credentials are present. Live IGDB authentication/search is not verified. GitHub-hosted action execution remains unverified.
 
 - Live-mode CLI smoke: manual-only configuration generates with no API credentials; selecting IGDB without credentials fails clearly and preserves the previous PNG hash.
+
+## Favorite spacing revision
+
+- Removed category labels from personal favorites; no invented captions.
+- Favorite row heights use actual title line counts and note presence.
+- Majora placeholder replaced by sourced box artwork; compact display name avoids an orphan character. Personal layout: 480 x 428.
+- pnpm verify passes all 24 tests, type checking and build.
+
+## Localized game titles
+
+- 25 tests pass, including selected-language overrides shared across favorite/recent/lifetime sections and legacy fallback.
+- Personal previews: English 480 x 443, Chinese 480 x 428; longer English names may wrap.

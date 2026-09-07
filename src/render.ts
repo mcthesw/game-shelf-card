@@ -46,7 +46,7 @@ export function renderCard(model: CardModel, config: Config, artwork: Artwork, f
     }
   };
   let y = 16;
-  text(model.favorites.some(game => game.appid === undefined) ? 'Games' : 'Steam', 16, y + 16, 15, theme.accent);
+  text(model.favorites.some(game => game.appid === undefined) ? (config.language === 'zh-CN' ? '游戏' : 'Games') : 'Steam', 16, y + 16, 15, theme.accent);
   if (model.demo) text(tr.demo, 464, y + 16, 10, theme.muted, 100, 'end');
   y += 28;
   if (config.sections.overview.enabled) {
@@ -78,16 +78,21 @@ export function renderCard(model: CardModel, config: Config, artwork: Artwork, f
   if (config.sections.favorites.enabled) {
     section(tr.favorites, '');
     if (!model.favorites.length) empty(tr.emptyFavorites);
-    model.favorites.forEach((game, index) => {
-      const x = 16 + (index % 3) * 154;
-      const top = y + Math.floor(index / 3) * 124;
-      picture(artwork.games.get(gameKey(game)), x, top, 140, 65, game.appid ?? 145, 4);
-      typography.lines(game.name, 12, 140, 2).forEach((line, lineIndex) => {
-        text(line, x, top + 81 + lineIndex * 15, 12, theme.text, 140);
+    for (let start = 0; start < model.favorites.length; start += 3) {
+      const games = model.favorites.slice(start, start + 3);
+      const titles = games.map(game => typography.lines(game.name, 12, 140, 2));
+      const titleLines = Math.max(...titles.map(lines => lines.length));
+      const hasNotes = games.some(game => Boolean(game.note));
+      games.forEach((game, column) => {
+        const x = 16 + column * 154;
+        picture(artwork.games.get(gameKey(game)), x, y, 140, 65, game.appid ?? 145, 4);
+        titles[column]!.forEach((line, lineIndex) => {
+          text(line, x, y + 81 + lineIndex * 15, 12, theme.text, 140);
+        });
+        if (game.note) text(game.note, x, y + 81 + titleLines * 15, 10, theme.muted, 140);
       });
-      if (game.note) text(game.note, x, top + 113, 10, theme.muted, 140);
-    });
-    y += Math.ceil(model.favorites.length / 3) * 124;
+      y += 81 + (titleLines - 1) * 15 + (hasNotes ? 15 : 0) + 12;
+    }
     y += 6;
   }
   if (config.sections.recent.enabled) {

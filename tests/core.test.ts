@@ -104,3 +104,19 @@ test('only explicit HTTPS Steam image hosts are accepted', () => {
     assert.equal(allowedImageUrl(url), undefined);
   }
 });
+
+test('localized names follow card language consistently across sections with legacy fallback', () => {
+  const config = configSchema.parse({ steam_id: '76561198000000000', sections: { favorites: { games: [
+    { appid: 250900, name: 'Fallback', names: { en: 'Isaac', 'zh-CN': '以撒' } },
+  ] } } });
+  const snapshot = demoSnapshot(config);
+  let model = buildModel(snapshot, config);
+  assert.equal(model.favorites[0]!.name, 'Isaac');
+  assert.equal(model.recent.find(game => game.appid === 250900)!.name, 'Isaac');
+  config.language = 'zh-CN';
+  model = buildModel(snapshot, config);
+  assert.equal(model.favorites[0]!.name, '以撒');
+  assert.equal(model.mostPlayed.find(game => game.appid === 250900)!.name, '以撒');
+  delete config.sections.favorites.games[0]!.names;
+  assert.equal(buildModel(snapshot, config).favorites[0]!.name, 'Fallback');
+});

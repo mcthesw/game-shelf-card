@@ -44,18 +44,22 @@ export interface CardModel {
 export function buildModel(snapshot: Snapshot, config: Config): CardModel {
   const excluded = new Set(config.exclude_games);
   const catalog = new Map([...snapshot.games, ...snapshot.favorites].map(game => [gameKey(game), game]));
+  const nameFor = (game: Game) => {
+    const override = config.sections.favorites.games.find(favorite => gameKey(favorite) === gameKey(game));
+    return override?.names?.[config.language] ?? override?.name ?? game.name;
+  };
   const favorites = config.sections.favorites.enabled
     ? config.sections.favorites.games.slice(0, config.sections.favorites.limit).map(favorite => {
       const game = catalog.get(gameKey(favorite));
       if (!game) throw new Error(`Favorite ${gameKey(favorite)} was not resolved.`);
-      return { ...game, name: favorite.name ?? game.name, note: favorite.note, image: favorite.image ?? game.image };
+      return { ...game, name: nameFor(game), note: favorite.note, image: favorite.image ?? game.image };
     }) : [];
   const recent = snapshot.recent.filter(game => !excluded.has(game.appid!) && game.recentMinutes > 0)
     .sort((a, b) => b.recentMinutes - a.recentMinutes || a.appid! - b.appid!)
-    .slice(0, config.sections.recent.limit);
+    .slice(0, config.sections.recent.limit).map(game => ({ ...game, name: nameFor(game) }));
   const mostPlayed = snapshot.games.filter(game => !excluded.has(game.appid!) && (game.minutes ?? 0) > 0)
     .sort((a, b) => (b.minutes ?? 0) - (a.minutes ?? 0) || a.appid! - b.appid!)
-    .slice(0, config.sections.most_played.limit);
+    .slice(0, config.sections.most_played.limit).map(game => ({ ...game, name: nameFor(game) }));
   return {
     name: config.display_name ?? snapshot.profile.name,
     steamId: snapshot.profile.steamId,

@@ -1,0 +1,42 @@
+# Six favorites; captions intentionally omitted.
+# Demo statistics are fictional. Replace steam_id before using live mode.
+steam_id: "76561198000000000"
+language: zh-CN
+theme: dark
+sections:
+  favorites:
+    limit: 6
+    games:
+      - appid: 753640
+        name: "Outer Wilds"
+        names:
+          en: "Outer Wilds"
+          zh-CN: 星际拓荒
+      - appid: 1086940
+        name: "Baldur's Gate 3"
+        names:
+          en: "Baldur's Gate 3"
+          zh-CN: 博德之门 3
+      - appid: 1245620
+        name: "ELDEN RING"
+        names:
+          en: "ELDEN RING"
+          zh-CN: 艾尔登法环
+      - appid: 250900
+        name: "The Binding of Isaac: Rebirth"
+        names:
+          en: "The Binding of Isaac: Rebirth"
+          zh-CN: 以撒的结合
+      - appid: 1229490
+        name: "ULTRAKILL"
+        names:
+          en: "ULTRAKILL"
+          zh-CN: ULTRAKILL
+      - id: majoras-mask
+        name: "The Legend of Zelda: Majora's Mask"
+        names:
+          en: "The Legend of Zelda: Majora's Mask"
+          zh-CN: 塞尔达：姆吉拉的假面
+        image: assets/majoras-mask.jpg
+  recent:
+    limit: 3

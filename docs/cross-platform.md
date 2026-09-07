@@ -69,16 +69,34 @@ local cache is persistent. No account/player activity is fetched from IGDB.
 
 ## Six-favorite preview
 
-`examples/personal-demo.yml` contains the six discussed games, keeps the user's
-category labels as provisional notes, and displays three fictional recent games.
-Majora's Mask uses original text-only placeholder artwork in `examples/assets/`;
-it is not an IGDB search result or an official cover. Replace its image with your
-chosen cover or switch the entry to an IGDB ID after searching.
+`examples/personal-demo.yml` contains the six discussed games with covers and names,
+without category labels or captions, and displays three fictional recent games.
+Majora's Mask uses a local copy of the North American box cover from Wikipedia;
+see `examples/assets/README.md` for source and rights. It remains a manual entry,
+not an authenticated IGDB lookup result.
 
 ```sh
 pnpm run demo:all --online-art --config examples/personal-demo.yml --output-dir docs/previews-personal
 ```
 
-Preview: `docs/previews-personal/index.html`. Size: 480 x 490 logical pixels, transparent.
+Preview: `docs/previews-personal/index.html`. Size: 480 x 428 logical pixels, transparent.
 No personal credentials are required for this demo. Live authentication/search and
 GitHub-hosted Actions remain unverified until credentials and a remote are available.
+
+## Localized names
+
+Use `names.en` and `names.zh-CN` for language-specific titles. These overrides also
+apply when the same game appears in recent activity or lifetime ranking. Resolution
+order is selected-language name, legacy `name`, then the source title. For example:
+
+```yaml
+- appid: 753640
+  names:
+    en: Outer Wilds
+    zh-CN: 星际拓荒
+```
+
+No machine translation is applied. Steam activity endpoints do not document a
+language parameter; live games without an explicit localized name retain the title
+returned by Steam. The bilingual demo catalog is illustrative, not a universal
+translation database. `name` remains required as a fallback for manual entries.

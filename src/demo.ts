@@ -12,6 +12,11 @@ export function demoSnapshot(config: Config): Snapshot {
     { appid: 620, name: 'Portal 2', minutes: 1980, recentMinutes: 0 },
     { appid: 105600, name: 'Terraria', minutes: 11100, recentMinutes: 0 },
   ];
+  if (config.language === 'zh-CN') {
+    const names: Record<number, string> = { 250900: '以撒的结合：重生', 1145360: '哈迪斯', 1245620: '艾尔登法环',
+      413150: '星露谷物语', 367520: '空洞骑士', 646570: '杀戮尖塔', 620: '传送门 2', 105600: '泰拉瑞亚' };
+    for (const game of games) game.name = names[game.appid] ?? game.name;
+  }
   return {
     profile: { steamId: config.steam_id, name: 'Player One' },
     games, recent: games.filter(game => game.recentMinutes > 0),
