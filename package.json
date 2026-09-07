@@ -1,5 +1,5 @@
 {
-  "name": "steam-stats-card",
+  "name": "game-shelf-card",
   "version": "0.1.0",
   "private": true,
   "description": "A configurable Steam profile card for GitHub READMEs",

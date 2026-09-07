@@ -1,4 +1,4 @@
-# Steam Stats
+# Game Shelf Card
 
 A game card for your GitHub README: handpicked favorites, recent Steam activity,
 and optional playtime rankings. Supports Steam, IGDB, and your own game entries.
@@ -43,8 +43,8 @@ See the [configuration reference](docs/configuration.md) for all options and
 Use Node.js 22 or 24 and pnpm 11.1.2:
 
 ```sh
-git clone https://github.com/mcthesw/steam-stats.git
-cd steam-stats
+git clone https://github.com/mcthesw/game-shelf-card.git
+cd game-shelf-card
 pnpm install --frozen-lockfile --ignore-scripts
 pnpm run demo
 ```

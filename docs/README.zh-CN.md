@@ -1,4 +1,4 @@
-# Steam Stats
+# Game Shelf Card
 
 在 GitHub README 展示一张游戏卡片：自选最爱、最近在玩，以及可选的累计时长排行。
 支持 Steam、IGDB 和手动添加的游戏。
@@ -40,8 +40,8 @@
 安装 Node.js 22 或 24、pnpm 11.1.2：
 
 ```sh
-git clone https://github.com/mcthesw/steam-stats.git
-cd steam-stats
+git clone https://github.com/mcthesw/game-shelf-card.git
+cd game-shelf-card
 pnpm install --frozen-lockfile --ignore-scripts
 pnpm run demo
 ```

@@ -32,7 +32,7 @@ jobs:
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-      - uses: mcthesw/steam-stats@05fc6b06841ebfa120bda082973384f8194c21fc
+      - uses: mcthesw/game-shelf-card@05fc6b06841ebfa120bda082973384f8194c21fc
         id: card
         with:
           steam-api-key: ${{ secrets.steam-api-key }}

@@ -7,6 +7,6 @@ permissions:
   contents: write
 jobs:
   update:
-    uses: mcthesw/steam-stats/.github/workflows/update-card.yml@main
+    uses: mcthesw/game-shelf-card/.github/workflows/update-card.yml@main
     secrets:
       steam-api-key: ${{ secrets.STEAM_API_KEY }}
