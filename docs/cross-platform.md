@@ -44,14 +44,13 @@ and hyphens; manual entries require both `name` and `image`.
 3. Run `pnpm run search -- "Majora's Mask"` from this repository.
 4. Choose the release from the results and add its ID as an `igdb_id` entry.
 
-For GitHub Actions, add the credentials as repository secrets and pass them to the Action:
+For GitHub Actions, add the credentials as repository secrets and pass them to the reusable workflow:
 
 ```yaml
-with:
+secrets:
   steam-api-key: ${{ secrets.STEAM_API_KEY }}
   igdb-client-id: ${{ secrets.IGDB_CLIENT_ID }}
   igdb-client-secret: ${{ secrets.IGDB_CLIENT_SECRET }}
-  config: steam-stats.yml
 ```
 
 IGDB supplies game titles and covers. Recent activity and playtime come from Steam.

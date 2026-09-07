@@ -1,0 +1,60 @@
+name: Update game card
+on:
+  workflow_call:
+    inputs:
+      config:
+        type: string
+        default: steam-stats.yml
+      output:
+        type: string
+        default: assets/steam-card.png
+      commit:
+        type: boolean
+        default: true
+      demo:
+        type: boolean
+        default: false
+    secrets:
+      steam-api-key:
+        required: false
+      igdb-client-id:
+        required: false
+      igdb-client-secret:
+        required: false
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: steam-card-${{ github.workflow }}-${{ github.ref }}-${{ inputs.output }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: mcthesw/steam-stats@05fc6b06841ebfa120bda082973384f8194c21fc
+        id: card
+        with:
+          steam-api-key: ${{ secrets.steam-api-key }}
+          igdb-client-id: ${{ secrets.igdb-client-id }}
+          igdb-client-secret: ${{ secrets.igdb-client-secret }}
+          config: ${{ inputs.config }}
+          output: ${{ inputs.output }}
+          demo: ${{ inputs.demo }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: game-cards
+          path: ${{ steps.card.outputs.path }}
+      - name: Commit updated card
+        if: inputs.commit && github.event_name != 'pull_request' && steps.card.outputs.changed == 'true'
+        env:
+          CARD_PATH: ${{ steps.card.outputs.path }}
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$CARD_PATH"
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'chore: update game card'
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"

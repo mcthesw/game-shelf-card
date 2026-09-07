@@ -52,7 +52,19 @@ Favorites accept `appid`, `igdb_id`, or a manual `id`, plus optional names, cove
 and notes. See [favorite entries](cross-platform.md). Titles wrap to two lines;
 notes use one line, with long text shortened to fit.
 
-## GitHub Action
+## Reusable workflow
+
+Use [the caller example](../examples/update-card.yml) to generate, upload, and commit
+cards. It follows `@main`; replace that ref with a commit SHA to pin a version.
+The caller controls the schedule and grants `contents: write`.
+
+Optional `with` inputs: `config` (default `steam-stats.yml`), `output` (default
+`assets/steam-card.png`), `commit` (default `true`), and `demo` (default `false`).
+Pass `steam-api-key`, `igdb-client-id`, and `igdb-client-secret` under `secrets`.
+Use `commit: false` to generate an artifact for review. Pull request runs always
+produce an artifact without committing.
+
+## Standalone Action
 
 | Input | Default / purpose |
 | --- | --- |

@@ -14,7 +14,7 @@
 2. 将 Steam「游戏详情」设为公开，并允许显示游玩时长。
    获取 [Steam Web API key](https://steamcommunity.com/dev/apikey)，在仓库
    **Settings → Secrets and variables → Actions** 中添加 `STEAM_API_KEY`。
-3. 将 [examples/update-card.yml](../examples/update-card.yml) 复制为
+3. 添加简短的[工作流引用](../examples/update-card.yml)，保存为
    `.github/workflows/steam-stats.yml`，把两个文件提交到默认分支。
    打开 **Actions → Update Steam card → Run workflow** 生成卡片。
 4. 在 README 添加图片，把链接改成自己的 Steam 主页或游戏介绍页：
@@ -25,7 +25,7 @@
 </a>
 ```
 
-工作流每天自动更新。示例使用单张透明图片，文字配色兼顾深浅背景。
+调用文件负责定时触发，共享工作流负责生成和提交图片。示例使用单张透明图片，文字配色兼顾深浅背景。
 
 ## 调整内容
 

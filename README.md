@@ -15,7 +15,7 @@ and optional playtime rankings. Supports Steam, IGDB, and your own game entries.
 2. Set your Steam **Game details** to public and allow playtime visibility.
    Get a [Steam Web API key](https://steamcommunity.com/dev/apikey) and save it in
    your repository under **Settings → Secrets and variables → Actions** as `STEAM_API_KEY`.
-3. Copy [examples/update-card.yml](examples/update-card.yml) to
+3. Add the short [workflow caller](examples/update-card.yml) as
    `.github/workflows/steam-stats.yml`. Commit both files to your default branch,
    then open **Actions → Update Steam card → Run workflow**.
 4. Add the generated card to your README. Set the link to your Steam profile or games page:
@@ -26,7 +26,7 @@ and optional playtime rankings. Supports Steam, IGDB, and your own game entries.
 </a>
 ```
 
-The workflow refreshes the card daily. The example uses one transparent image
+The caller schedules daily updates; the shared workflow generates and commits the card. The example uses one transparent image
 with neutral text colors for light and dark backgrounds.
 
 ## Customize
